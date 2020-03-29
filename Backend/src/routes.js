@@ -16,6 +16,6 @@ routes.get('/incidents', IncidentController.index);
 routes.post('/incidents', IncidentController.create);
 routes.delete('/incidents/:id', IncidentController.delete);
 
-routes.get('/incidents', ProfileController.index);
+routes.get('/profiles', ProfileController.index);
 
 module.exports = routes; //exportando var para outros arquivos(no index)
