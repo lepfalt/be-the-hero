@@ -9,8 +9,6 @@ module.exports = {
 
         const incidents = await connection('incidents')
             .join('ongs', 'ongs.id', '=', 'incidents.ong_id')
-            .limit(5) //retorna de 5 em 5
-            .offset((page - 1) * 5) //pula páginas se eu quero a 2, pula os 5 primeiros registros
             .select([
                 'incidents.*',
                 'ongs.name', 
@@ -19,7 +17,9 @@ module.exports = {
                 'ongs.city', 
                 'ongs.uf'
             ])
-            .orderBy(orderBy, 'asc');
+            .orderBy(orderBy, 'asc')
+            .limit(5) //retorna de 5 em 5
+            .offset((page - 1) * 5); //pula páginas se eu quero a 2, pula os 5 primeiros registros
 
         response.header('X-Total-Incident', count['count(*)']);
 

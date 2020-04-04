@@ -19,10 +19,12 @@ export default function Incidents() {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
 
-    let dataDrop = [{
-        value: 'name',
-        label: 'Name'
-      }, {
+    let dataDrop = [
+        //{
+    //     value: 'name',
+    //     label: 'Name'
+    //   },
+     {
         value: 'value',
         label: 'Value'
       }, {
@@ -58,11 +60,11 @@ export default function Incidents() {
         setLoading(false);
     }
 
-    async function setarOrder(value){
+    async function setOrder(value){
         if(value != undefined){
             await setOrderBy(value);
             await setPage(1);
-            console.log(orderBy);
+            
             const response = await api.get('incidents', {
                 params: { page, orderBy }
             });
@@ -72,13 +74,9 @@ export default function Incidents() {
         }
     }
 
-    this.onChangeText = (value) => {
-        setarOrder(value);
-    } 
-
     useEffect(() => {
         loadIncidents();
-        setarOrder(undefined);
+        setOrder(undefined);
     }, []);
 
     return (
@@ -94,8 +92,8 @@ export default function Incidents() {
             <Dropdown
                 label='OrdenarPor'
                 data={dataDrop}
-                value={orderBy}
-                onChangeText={(value) => {this.onChangeText(value)}} 
+                onChangeText={(value) => {setOrder(value)}}
+                value={orderBy} 
             />
             <Text style={styles.description} >Escolha um dos casos abaixo e salve o dia.</Text>
         
