@@ -3,6 +3,9 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { View, FlatList, Image, Text, TouchableOpacity } from 'react-native';
 
+//import Dropdown from '../../utils/dropdown';
+import { Dropdown } from 'react-native-material-dropdown';
+
 import api from '../../services/api';
 
 import logoImg from '../../assets/logo.png';
@@ -11,9 +14,21 @@ import styles from './styles';
 
 export default function Incidents() {
     const [incidents, setIncidents] = useState([]);
+    const [orderBy, setOrderBy] = useState('id');
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
+
+    let dataDrop = [{
+        value: 'name',
+        label: 'Name'
+      }, {
+        value: 'value',
+        label: 'Value'
+      }, {
+        value: 'id',
+        label: 'Todos'
+    }];
 
     const navigation = useNavigation();
 
@@ -22,6 +37,7 @@ export default function Incidents() {
     }
 
     async function loadIncidents(){
+        console.log('entrou no load : ' + orderBy);
         if(loading){
             return;
         }
@@ -33,7 +49,7 @@ export default function Incidents() {
         setLoading(true);
 
         const response = await api.get('incidents', {
-            params: { page }
+            params: { page, orderBy }
         });
 
         setIncidents([...incidents, ...response.data]);
@@ -42,8 +58,27 @@ export default function Incidents() {
         setLoading(false);
     }
 
+    async function setarOrder(value){
+        if(value != undefined){
+            await setOrderBy(value);
+            await setPage(1);
+            console.log(orderBy);
+            const response = await api.get('incidents', {
+                params: { page, orderBy }
+            });
+
+            setIncidents([...[], ...response.data]);
+            //await loadIncidents();
+        }
+    }
+
+    this.onChangeText = (value) => {
+        setarOrder(value);
+    } 
+
     useEffect(() => {
         loadIncidents();
+        setarOrder(undefined);
     }, []);
 
     return (
@@ -56,6 +91,12 @@ export default function Incidents() {
             </View>
 
             <Text style={styles.title} >Bem-vindo!</Text>
+            <Dropdown
+                label='OrdenarPor'
+                data={dataDrop}
+                value={orderBy}
+                onChangeText={(value) => {this.onChangeText(value)}} 
+            />
             <Text style={styles.description} >Escolha um dos casos abaixo e salve o dia.</Text>
         
             <FlatList 

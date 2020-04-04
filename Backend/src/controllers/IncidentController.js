@@ -2,7 +2,7 @@ const connection = require('../database/connection');
 
 module.exports = {
     async index (request, response){
-        const { page = 1 } = request.query; //paginação
+        const { page = 1, orderBy = 'id' } = request.query; //paginação
         
         const [count] = await connection('incidents')
             .count();
@@ -18,7 +18,8 @@ module.exports = {
                 'ongs.whatsapp', 
                 'ongs.city', 
                 'ongs.uf'
-            ]);
+            ])
+            .orderBy(orderBy, 'asc');
 
         response.header('X-Total-Incident', count['count(*)']);
 
